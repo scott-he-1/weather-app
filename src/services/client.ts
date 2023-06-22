@@ -1,4 +1,3 @@
-const url = "https://wft-geo-db.p.rapidapi.com/v1/geo/cities?minPopulation=100000&namePrefix=chicago";
 const options = {
   method: "GET",
   headers: {
@@ -7,14 +6,13 @@ const options = {
   },
 };
 
-export const getData = async () => {
+export const getCities = async (input: string) => {
+  const url = `https://wft-geo-db.p.rapidapi.com/v1/geo/cities?minPopulation=100000&namePrefix=${input}`;
   try {
     const response = await fetch(url, options);
-    const result = await response.text();
-    console.log(result);
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error(error);
   }
 };
-
-getData();

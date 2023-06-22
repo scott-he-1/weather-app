@@ -1,8 +1,9 @@
 "use client";
+import { getCities } from "@/services/client";
 import { SyntheticEvent, useState } from "react";
 
 export function SearchBar() {
-  const [searchInput, setSearchInput] = useState<string>();
+  const [searchInput, setSearchInput] = useState<string>("");
   const [cities, setCities] = useState<any>([]);
   const [timerId, setTimerId] = useState<
     string | number | NodeJS.Timeout | undefined
@@ -12,11 +13,14 @@ export function SearchBar() {
     const value = (e.target as HTMLInputElement).value;
     setSearchInput(value);
 
-    const debounceTime = 600;
+    const debounceTime = 300;
 
     clearTimeout(timerId);
     const newTimerId = setTimeout(() => {
-      console.log("loaded!");
+      getCities(searchInput).then((city) => {
+        setCities(city.data);
+        console.log(city.data);
+      });
     }, debounceTime);
     setTimerId(newTimerId);
   };
@@ -29,6 +33,11 @@ export function SearchBar() {
         value={searchInput}
         onChange={handleSearch}
       />
+      {cities.length > 0
+        ? cities.map((city: any) => {
+            return <div key={city.id}>{city.name}</div>;
+          })
+        : null}
     </div>
   );
 }
