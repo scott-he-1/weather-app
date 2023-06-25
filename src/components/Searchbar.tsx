@@ -32,7 +32,7 @@ export function SearchBar() {
     }, 1000);
     setTimerId(newTimerId);
   };
-  
+
   return (
     <div className="max-w-screen-lg">
       <input
@@ -40,12 +40,17 @@ export function SearchBar() {
         onChange={handleSearch}
         className="rounded-tr-sm rounded-tl-sm p-2 text-black"
         spellCheck="false"
+        placeholder="City"
       />
       {cities
         ? cities.map((city: any) => {
             return (
-              <div key={city.id} id={city.id} className="p-2 bg-white text-black hover:bg-sky-700">
-                {city.name}
+              <div
+                key={city.id}
+                id={city.id}
+                className="p-2 bg-white text-black hover:bg-sky-700"
+              >
+                {city.name}, {city.country}
               </div>
             );
           })
