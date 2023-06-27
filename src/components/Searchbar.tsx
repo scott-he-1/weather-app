@@ -10,7 +10,7 @@ export function SearchBar() {
     string | number | NodeJS.Timeout | undefined
   >(undefined);
 
-  const handleSearch = (e: SyntheticEvent) => {
+  const handleSearchInput = (e: SyntheticEvent) => {
     const value = (e.target as HTMLInputElement).value;
     clearTimeout(timerId);
     const newTimerId = setTimeout(() => {
@@ -37,8 +37,8 @@ export function SearchBar() {
     <div className="max-w-screen-lg">
       <input
         type="text"
-        onChange={handleSearch}
-        className="rounded-tr-sm rounded-tl-sm p-2 text-black"
+        onChange={handleSearchInput}
+        className="rounded-tr-sm rounded-tl-sm p-2 text-black w-fit"
         spellCheck="false"
         placeholder="City"
       />
@@ -50,7 +50,7 @@ export function SearchBar() {
                 id={city.id}
                 className="p-2 bg-white text-black hover:bg-sky-700"
               >
-                {city.name}, {city.country}
+                {city.name}, {city.regionCode}, {city.country}
               </div>
             );
           })
