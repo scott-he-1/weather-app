@@ -38,7 +38,7 @@ export function SearchBar() {
       <input
         type="text"
         onChange={handleSearchInput}
-        className="rounded-tr-sm rounded-tl-sm p-2 text-black w-fit"
+        className="rounded-tr-sm rounded-tl-sm p-2 text-black w-auto"
         spellCheck="false"
         placeholder="City"
       />
