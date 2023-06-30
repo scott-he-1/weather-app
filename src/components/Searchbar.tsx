@@ -12,10 +12,10 @@ export function SearchBar() {
 
   const handleSearchInput = (e: SyntheticEvent) => {
     const value = (e.target as HTMLInputElement).value;
+    setIsLoadingCities(true);
     clearTimeout(timerId);
     const newTimerId = setTimeout(() => {
       if (value.length > 0) {
-        setIsLoadingCities(true);
         getCities(value)
           .then((city) => {
             setCities(city.data);
@@ -28,9 +28,36 @@ export function SearchBar() {
           .finally(() => setIsLoadingCities(false));
       } else {
         setCities([]);
+        setIsLoadingCities(false);
       }
-    }, 1000);
+    }, 800);
     setTimerId(newTimerId);
+  };
+
+  const handleSearchResults = () => {
+    if (isLoadingCities) {
+      return <div>Loading...</div>;
+    }
+
+    if (isErrorCities) {
+      return <div>Something went wrong</div>;
+    }
+
+    return cities ? (
+      cities.map((city: any) => {
+        return (
+          <div
+            key={city.id}
+            id={city.id}
+            className="p-2 bg-white text-black hover:bg-sky-700"
+          >
+            {city.name}, {city.regionCode}, {city.country}
+          </div>
+        );
+      })
+    ) : (
+      <div>No Results</div>
+    );
   };
 
   return (
@@ -42,19 +69,7 @@ export function SearchBar() {
         spellCheck="false"
         placeholder="City"
       />
-      {cities
-        ? cities.map((city: any) => {
-            return (
-              <div
-                key={city.id}
-                id={city.id}
-                className="p-2 bg-white text-black hover:bg-sky-700"
-              >
-                {city.name}, {city.regionCode}, {city.country}
-              </div>
-            );
-          })
-        : null}
+      {handleSearchResults()}
     </div>
   );
 }
