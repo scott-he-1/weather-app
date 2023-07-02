@@ -34,7 +34,7 @@ export function SearchBar() {
     setTimerId(newTimerId);
   };
 
-  const handleSearchResults = () => {
+  const searchResults = () => {
     if (isLoadingCities) {
       return <div>Loading...</div>;
     }
@@ -69,7 +69,7 @@ export function SearchBar() {
         spellCheck="false"
         placeholder="City"
       />
-      {handleSearchResults()}
+      {searchResults()}
     </div>
   );
 }
