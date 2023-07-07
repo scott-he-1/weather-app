@@ -6,7 +6,7 @@ const options = {
   },
 };
 
-export const getCities = async (input: string) => {
+export const getSelectCities = async (input: string) => {
   const url = `https://wft-geo-db.p.rapidapi.com/v1/geo/cities?minPopulation=100000&namePrefix=${input.trim()}`;
   try {
     const response = await fetch(url, options);
@@ -15,4 +15,11 @@ export const getCities = async (input: string) => {
   } catch (error) {
     console.error(error);
   }
+};
+
+const apiKey = "9e2df23bf04bf06a287cc4792bce2be1";
+export const getData = async ({ lat, lon }: { lat: string; lon: string }) => {
+  return fetch(
+    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`
+  ).then((res) => res.json());
 };

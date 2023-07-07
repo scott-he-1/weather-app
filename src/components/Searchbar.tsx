@@ -1,9 +1,14 @@
 "use client";
-import { getCities } from "@/services/client";
-import { SyntheticEvent, useState } from "react";
+import { getData, getSelectCities } from "@/services/client";
+import { Dispatch, SetStateAction, SyntheticEvent, useState } from "react";
 
-export function SearchBar() {
-  const [cities, setCities] = useState([]);
+export function SearchBar({
+  setSearchedCity,
+}: {
+  setSearchedCity: Dispatch<SetStateAction<undefined>>;
+}) {
+  const [searchInputValue, setSearchInputValue] = useState("");
+  const [citySuggestions, setCitySuggestions] = useState([]);
   const [isLoadingCities, setIsLoadingCities] = useState(false);
   const [isErrorCities, setIsErrorCities] = useState(false);
   const [timerId, setTimerId] = useState<
@@ -12,26 +17,38 @@ export function SearchBar() {
 
   const handleSearchInput = (e: SyntheticEvent) => {
     const value = (e.target as HTMLInputElement).value;
+    setSearchInputValue(value);
     setIsLoadingCities(true);
     clearTimeout(timerId);
     const newTimerId = setTimeout(() => {
       if (value.length > 0) {
-        getCities(value)
+        getSelectCities(value)
           .then((city) => {
-            setCities(city.data);
+            setCitySuggestions(city.data);
             console.log(city.data);
           })
           .catch((error) => {
             console.error(error);
             setIsErrorCities(true);
           })
-          .finally(() => setIsLoadingCities(false));
+          .finally(() => {
+            setIsLoadingCities(false);
+            setSearchInputValue("");
+          });
       } else {
-        setCities([]);
+        setCitySuggestions([]);
         setIsLoadingCities(false);
       }
     }, 800);
     setTimerId(newTimerId);
+  };
+
+  const handleCitySelect = (e: SyntheticEvent) => {
+    const lat = (e.target as HTMLDivElement).getAttribute("data-lat");
+    const lon = (e.target as HTMLDivElement).getAttribute("data-lon");
+    if (lat && lon) {
+      getData({ lat, lon }).then(setSearchedCity).then();
+    }
   };
 
   const searchResults = () => {
@@ -43,13 +60,16 @@ export function SearchBar() {
       return <div>Something went wrong</div>;
     }
 
-    return cities ? (
-      cities.map((city: any) => {
+    return citySuggestions ? (
+      citySuggestions.map((city: any) => {
         return (
           <div
             key={city.id}
             id={city.id}
-            className="p-2 bg-white text-black hover:bg-sky-700"
+            className="p-2 bg-white text-black hover:bg-sky-700 cursor-pointer"
+            data-lat={city.latitude}
+            data-lon={city.longitude}
+            onClick={handleCitySelect}
           >
             {city.name}, {city.regionCode}, {city.country}
           </div>
@@ -65,9 +85,10 @@ export function SearchBar() {
       <input
         type="text"
         onChange={handleSearchInput}
-        className="rounded-tr-sm rounded-tl-sm p-2 text-black w-auto"
+        className="rounded-tr-sm rounded-tl-sm p-2 text-black w-auto focus:outline-0"
         spellCheck="false"
         placeholder="City"
+        value={searchInputValue}
       />
       {searchResults()}
     </div>
