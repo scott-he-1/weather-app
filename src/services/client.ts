@@ -20,6 +20,6 @@ export const getSelectCities = async (input: string) => {
 const apiKey = "9e2df23bf04bf06a287cc4792bce2be1";
 export const getData = async ({ lat, lon }: { lat: string; lon: string }) => {
   return fetch(
-    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`
+    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${apiKey}`
   ).then((res) => res.json());
 };

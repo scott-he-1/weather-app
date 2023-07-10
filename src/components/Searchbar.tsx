@@ -4,13 +4,17 @@ import { Dispatch, SetStateAction, SyntheticEvent, useState } from "react";
 
 export function SearchBar({
   setSearchedCity,
+  setIsLoadingCity,
+  setIsErrorLoadingCity,
 }: {
   setSearchedCity: Dispatch<SetStateAction<undefined>>;
+  setIsLoadingCity: Dispatch<SetStateAction<boolean>>;
+  setIsErrorLoadingCity: Dispatch<SetStateAction<boolean>>;
 }) {
   const [searchInputValue, setSearchInputValue] = useState("");
   const [citySuggestions, setCitySuggestions] = useState([]);
-  const [isLoadingCities, setIsLoadingCities] = useState(false);
-  const [isErrorCities, setIsErrorCities] = useState(false);
+  const [isLoadingCities, setIsLoadingCitySuggestions] = useState(false);
+  const [isErrorCities, setIsErrorLoadingCitySuggestions] = useState(false);
   const [timerId, setTimerId] = useState<
     string | number | NodeJS.Timeout | undefined
   >(undefined);
@@ -18,26 +22,24 @@ export function SearchBar({
   const handleSearchInput = (e: SyntheticEvent) => {
     const value = (e.target as HTMLInputElement).value;
     setSearchInputValue(value);
-    setIsLoadingCities(true);
+    setIsLoadingCitySuggestions(true);
     clearTimeout(timerId);
     const newTimerId = setTimeout(() => {
       if (value.length > 0) {
         getSelectCities(value)
           .then((city) => {
             setCitySuggestions(city.data);
-            console.log(city.data);
           })
           .catch((error) => {
             console.error(error);
-            setIsErrorCities(true);
+            setIsErrorLoadingCitySuggestions(true);
           })
           .finally(() => {
-            setIsLoadingCities(false);
-            setSearchInputValue("");
+            setIsLoadingCitySuggestions(false);
           });
       } else {
         setCitySuggestions([]);
-        setIsLoadingCities(false);
+        setIsLoadingCitySuggestions(false);
       }
     }, 800);
     setTimerId(newTimerId);
@@ -47,17 +49,29 @@ export function SearchBar({
     const lat = (e.target as HTMLDivElement).getAttribute("data-lat");
     const lon = (e.target as HTMLDivElement).getAttribute("data-lon");
     if (lat && lon) {
-      getData({ lat, lon }).then(setSearchedCity).then();
+      setIsLoadingCity(true);
+      getData({ lat, lon })
+        .then((data) => {
+          console.log(data);
+          setSearchedCity(data);
+          setSearchInputValue("");
+          setCitySuggestions([]);
+        })
+        .catch((error) => {
+          console.error(error);
+          setIsErrorLoadingCity(true);
+        })
+        .finally(() => setIsLoadingCity(false));
     }
   };
 
   const searchResults = () => {
     if (isLoadingCities) {
-      return <div>Loading...</div>;
+      return <div className="bg-white text-black p-2">Loading...</div>;
     }
 
     if (isErrorCities) {
-      return <div>Something went wrong</div>;
+      return <div className="bg-white text-black">Error Loading, please try again</div>;
     }
 
     return citySuggestions ? (
@@ -90,7 +104,7 @@ export function SearchBar({
         placeholder="City"
         value={searchInputValue}
       />
-      {searchResults()}
+      <div className="absolute">{searchResults()}</div>
     </div>
   );
 }
