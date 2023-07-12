@@ -12,15 +12,16 @@ export const WeatherCard = ({
   icon: string;
 }) => {
   return (
-    <div className="text-center flex flex-col items-center justify-items-center border-2 w-80 p-5">
-      <div className="text-lg">{day}</div>
-      <div>{time}</div>
-      <div>{temp}°F</div>
+    <div className="text-center flex flex-col items-center justify-items-center border-2 w-80 p-5 gap-3">
+      <div className="text-lg font-bold">{day}</div>
+      <div className="text-gray-500">{time}</div>
+      <div className="text-4xl font-bold">{parseInt(temp).toFixed(0)}°F</div>
       <img
         src={`https://openweathermap.org/img/wn/${icon}@2x.png`}
         alt="icon"
+        className="w-20 h-20 mt-2"
       />
-      <div>{description}</div>
+      <div className="text-gray-500">{description}</div>
     </div>
   );
 };

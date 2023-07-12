@@ -9,10 +9,10 @@ export default function Home() {
   const [isLoadingCity, setIsLoadingCity] = useState(false);
   const [isErrorLoadingCity, setIsErrorLoadingCity] = useState(false);
 
-  const dailyData = [0, 7, 15, 31, 39];
+  const dailyDataSet = [0, 7, 15, 31, 39];
 
   return (
-    <div>
+    <div className="flex flex-col gap-3">
       <SearchBar
         setSearchedCity={setSearchedCity}
         setIsLoadingCity={setIsLoadingCity}
@@ -20,21 +20,24 @@ export default function Home() {
       />
       {searchedCity ? (
         <div>
-          <div>{searchedCity.city.name}</div>
-          {dailyData.map((index) => {
-            return (
-              <WeatherCard
-                key={index}
-                description={searchedCity.list[index].weather[0].description}
-                day={moment(searchedCity.list[index].dt_txt).format("dddd")}
-                time={moment(searchedCity.list[index].dt_txt).format(
-                  "MMMM Do YYYY, h:mm:ss a"
-                )}
-                temp={searchedCity.list[index].main.temp}
-                icon={searchedCity.list[index].weather[0].icon}
-              />
-            );
-          })}
+          <div className="text-4xl">{searchedCity.city.name}</div>
+          <div className="flex">
+            {dailyDataSet.map((index) => {
+              const currentIndex = searchedCity.list[index];
+              const newDate = new Date();
+              newDate.setTime(currentIndex.dt * 1000);
+              return (
+                <WeatherCard
+                  key={index}
+                  description={currentIndex.weather[0].description}
+                  day={moment(newDate).format("dddd")}
+                  time={moment(newDate).format("MMMM Do, h:mm a")}
+                  temp={currentIndex.main.temp}
+                  icon={currentIndex.weather[0].icon}
+                />
+              );
+            })}
+          </div>
         </div>
       ) : null}
     </div>

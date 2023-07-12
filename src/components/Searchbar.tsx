@@ -71,7 +71,11 @@ export function SearchBar({
     }
 
     if (isErrorCities) {
-      return <div className="bg-white text-black">Error Loading, please try again</div>;
+      return (
+        <div className="bg-white text-black">
+          Error Loading, please try again
+        </div>
+      );
     }
 
     return citySuggestions ? (
@@ -80,7 +84,7 @@ export function SearchBar({
           <div
             key={city.id}
             id={city.id}
-            className="p-2 bg-white text-black hover:bg-sky-700 cursor-pointer"
+            className="p-2 bg-white text-black hover:bg-sky-700 cursor-pointer focus:bg-sky-700"
             data-lat={city.latitude}
             data-lon={city.longitude}
             onClick={handleCitySelect}
@@ -103,8 +107,11 @@ export function SearchBar({
         spellCheck="false"
         placeholder="City"
         value={searchInputValue}
+        autoFocus
       />
-      <div className="absolute">{searchResults()}</div>
+      <div className="absolute" id="searchBar">
+        {searchResults()}
+      </div>
     </div>
   );
 }
