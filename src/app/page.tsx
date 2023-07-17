@@ -21,7 +21,7 @@ export default function Home() {
       {searchedCity ? (
         <div>
           <div className="text-4xl">{searchedCity.city.name}</div>
-          <div className="flex tablet:flex-col">
+          <div className="flex tablet:flex-col tablet:gap-3">
             {dailyDataSet.map((index) => {
               const currentIndex = searchedCity.list[index];
               const newDate = new Date();

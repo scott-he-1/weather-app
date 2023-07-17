@@ -12,7 +12,7 @@ export const WeatherCard = ({
   icon: string;
 }) => {
   return (
-    <div className="text-center flex flex-col items-center justify-items-center border-2 w-80 p-5 gap-3">
+    <div className="text-center flex flex-col items-center justify-items-center border-2 w-100 p-5 gap-3">
       <div className="text-lg font-bold">{day}</div>
       <div className="text-gray-500">{time}</div>
       <div className="text-4xl font-bold">{parseInt(temp).toFixed(0)}°F</div>
